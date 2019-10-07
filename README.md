@@ -1,15 +1,18 @@
 # 6502 cpu assembler 
-主は完全初心者のため玄人達からすると謎理論や謎実装のオンパレードかもしれませんがご容赦ください。
+
 
 ## Description 
 
 こちらはファミコン用の機械語をはきだすアセンブラ。
+主は完全初心者のため玄人達からすると謎理論や謎実装のオンパレードかもしれませんがご容赦ください。
+
+## 構文
 
 アセンブリのフォーマット　format 
-.LAVEL OPECODE OPERAND
+
+**.LAVEL OPECODE OPERAND**
 
 exception
-
 `.HOGE lda #$1f`
 
 ### LAVEL
@@ -19,8 +22,9 @@ exception
 次に、オペコードについて。
 実装しているオペコードは
 
-- LDA
-- STA
+- LDA (一部)
+- STA (一部)
+- ORA (一部)
 
 である。
 各コードの詳細は[こちら](http://hp.vector.co.jp/authors/VA042397/nes/6502.html)
@@ -35,6 +39,18 @@ exception
 - $ hexadecimal
 
 
-#### 余談
-実は即値(immediate)に関しては、オペコードで判別しているため「#」はなくても実装
-はできるが、可読性をあげるために「#」をつけないとエラーを出すようにしている。
+### comment
+コメントは文頭に[;]を付ける
+
+
+## 関数について
+
+### tokenize()
+トークンナイザというなの何か別のもの。
+コンパイラとは違い一つずつの要素に分けて考えなくてもよいので1トークンは、
+- lavel_adder
+- lavel
+- opecode
+- operand
+の情報を持った変数TOKENで構成される。
+
