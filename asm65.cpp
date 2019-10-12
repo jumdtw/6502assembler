@@ -2,6 +2,18 @@
 #include<iostream>
 #include<stdio.h>
 
+void debug_print(TOKEN *token){
+    cout << "Lavel : " << token->lavel << endl;
+    cout << "Opecodestr : " << token->opecodestr << endl;
+    cout << "Operandstr : " << token->operandstr << endl;
+    cout << "Imm_FLAG : " << token->Imm_FLAG << endl;
+    cout << "Hex_FLAG : " << token->Hex_FLAG << endl;
+    cout << "Bin_FLAG : " << token->Bin_FLAG << endl;
+    cout << "opecode : " << "0x" << std::hex << token->opecode << endl;
+    cout << "operand : " << "0x" << std::hex << token->operand << endl;
+    cout << "size : " << "0x" << hex << token->size << endl;
+}
+
 int main(int argc,char *argv[]){
 
     if(argc==1){
@@ -11,14 +23,6 @@ int main(int argc,char *argv[]){
     string asmcode = argv[1];
     vector<TOKEN> source = tokenize(asmcode);
     TOKEN ppp = source[0];
-    cout << "Lavel : " << ppp.lavel << endl;
-    cout << "Opecodestr : " << ppp.opecodestr << endl;
-    cout << "Operandstr : " << ppp.operandstr << endl;
-    cout << "Imm_FLAG : " << ppp.Imm_FLAG << endl;
-    cout << "Hex_FLAG : " << ppp.Hex_FLAG << endl;
-    cout << "Bin_FLAG : " << ppp.Bin_FLAG << endl;
-    cout << "opecode : " << "0x" << std::hex << ppp.opecode << endl;
-    cout << "operand : " << "0x" << std::hex << ppp.operand << endl;
-    cout << "size : " << "0x" << hex << ppp.size << endl;
+    debug_print(&ppp);
     return 0;
 }

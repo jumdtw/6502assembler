@@ -66,7 +66,6 @@ void change_str_chr(TOKEN *token){
     }else if(token->Imm_FLAG){       // 10進数の場合(hexでもbinでもないのにimmなのは10進数しかありえない。すべてfalseの場合はlavelである。)
         token->operand = (unsigned int)atoi(token->operandstr.c_str());
     }
-    cout << "end change_str_chr" << endl;
 }
 
 int input_token_info(TOKEN *p,string buf,int PAST_PHASE){
@@ -156,7 +155,7 @@ vector<TOKEN> tokenize(string asmcode){
     lavel_map = lavel_mapping(token_vector);
 
     // opecode
-    token_vector = input_opecode_info(token_vector,lavel_map);
+    //token_vector = input_opecode_info(token_vector,lavel_map);
 
     return token_vector;
 }
