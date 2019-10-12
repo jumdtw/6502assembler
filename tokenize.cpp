@@ -18,11 +18,14 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
         buf_token = token_vector[i];
         if(buf_token.LAVEL_FLAG){
             buf_info.lavel = buf_token.lavel;
-            buf_info.addr;
+            buf_info.addr = base_addr;
         }
         map.push_back(buf_info);
         // plus opecode size
         base_addr += buf_token.size;        
+    }
+    for(int i=0;i<map.size();i++){
+        cout << map[i].lavel << " : 0x" << std::hex << map[i].addr << endl;
     }
     return map;
 }
@@ -33,12 +36,10 @@ void check_hex_bin(TOKEN *p){
     if(p->operandstr.front() == Hex){
         p->Hex_FLAG = true;
         p->Bin_FLAG = false;
-        cout << "debug hex operandstr.substr(1) : "<< hex << p->operandstr.substr(1) << endl;
         p->operandstr = p->operandstr.substr(1);
     }else if(p->operandstr.front() == Bin){
         p->Hex_FLAG = false;
         p->Bin_FLAG = true;
-        cout << "debug bin operandstr.substr(1) : "<< hex << p->operandstr.substr(1) << endl;
         p->operandstr = p->operandstr.substr(1);
     }else{
         p->Hex_FLAG = false;
@@ -50,7 +51,6 @@ void check_Imm(TOKEN *p){
     const char Imm = '#';
     if(p->operandstr.front() == Imm){
         p->Imm_FLAG = true;
-        cout << "debug imm operandstr.substr(1) : "<< hex << p->operandstr.substr(1) << endl;
         p->operandstr = p->operandstr.substr(1);
     }else{
         p->Imm_FLAG = false;
