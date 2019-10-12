@@ -4,6 +4,10 @@
 using namespace std;
 
 #include<string>
+#include<sstream>
+#include<istream>
+#include<iostream>
+#include<vector>
 
 // token num
 #define LAVEL 56
@@ -16,12 +20,6 @@ using namespace std;
 #define FINISH_PHASE 111
 
 
-// opecode
-#define LDA_IMM 0xa9
-#define LDA_ABS 0xad
-#define STA_ABS 0x8d
-#define ORA_IMM 0x09
-
 //トークン
 typedef struct{
     //各フラッグ
@@ -33,28 +31,24 @@ typedef struct{
     bool Bin_FLAG;
     //hex
     bool Hex_FLAG;
-    //dec
-    bool Dec_FLAG;
-    //zeropage 
-    bool Zero_FLAG;
     // 解析時に使う情報
-    char tokenize_num;
     string lavel;
     string opecodestr;
     string operandstr;
     // 実際にバイナリに書き込む情報
     unsigned char opecode;
-    unsigned char operand;   
+    unsigned int operand;   
+    unsigned int size;
 }TOKEN;
 
 //ラベルの名前とアドレス情報
 typedef struct{
     string lavel;
-    unsigned int adder;
+    unsigned int addr;
 }LAVEL_ADDER_INFO;
 
 
-TOKEN tokenize(string asmcode);
+vector<TOKEN> tokenize(string asmcode);
 
 
 #endif
