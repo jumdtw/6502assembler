@@ -15,8 +15,8 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
         if(buf_token.LAVEL_FLAG){
             buf_info.lavel = buf_token.lavel;
             buf_info.addr = base_addr;
+            map.push_back(buf_info);
         }
-        map.push_back(buf_info);
         // plus opecode size
         base_addr += buf_token.size;        
     }
@@ -52,7 +52,6 @@ void check_Imm(TOKEN *p){
 
 void change_str_chr(TOKEN *token){
     if(token->Hex_FLAG){             // 16進数の場合
-        cout << "debug stoi(((token->operandstr).c_str()),nullptr,16) : "<< hex << (unsigned int)stoi(((token->operandstr).c_str()),nullptr,16) << endl;
         token->operand = (unsigned int)stoi(((token->operandstr).c_str()),nullptr,16);
     }else if(token->Bin_FLAG){       // 2進数の場合
         token->operand = (unsigned int)stoi(((token->operandstr).c_str()),nullptr,2);
@@ -134,16 +133,19 @@ TOKEN analysis_line(string asmcode_line){
 }
 
 
-vector<TOKEN> tokenize(string asmcode){
+vector<TOKEN> tokenize(vector<string> asmcodes){
     //必要な変数
     // vector によるtokenの集まり
     vector<TOKEN> token_vector;
     // このlavel mapを参照することでlavelのアドレスがわかる。
     vector<LAVEL_ADDER_INFO> lavel_map;
 
-    // アセンブリコード一行分をここで解析する
-    TOKEN s = analysis_line(asmcode);
-    token_vector.push_back(s);
+    for(int i=0;i!=asmcodes.size();i++){
+        string asmcode = asmcodes[i];
+        // アセンブリコード一行分をここで解析する
+        TOKEN s = analysis_line(asmcode);
+        token_vector.push_back(s);
+    }
 
     // 一行ごとのサイズを割り出す
     token_vector = input_addr_size(token_vector);

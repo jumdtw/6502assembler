@@ -48,7 +48,7 @@ typedef struct{
 }LAVEL_ADDER_INFO;
 
 
-vector<TOKEN> tokenize(string asmcode);
+vector<TOKEN> tokenize(vector<string> asmcode);
 
 
 #endif
