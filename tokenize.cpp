@@ -1,11 +1,7 @@
 #include"tokenize.hpp"
 #include"calc_addr.hpp"
+#include"input_hex_info.hpp"
 
-
-vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map){
-    vector<TOKEN> p;
-    return p;
-}
 
 
 vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
@@ -14,7 +10,7 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
     TOKEN buf_token;
     unsigned int base_addr = 0x8000;
 
-    for(int i=0;i<token_vector.size();i++){
+    for(int i=0;i!=token_vector.size();i++){
         buf_token = token_vector[i];
         if(buf_token.LAVEL_FLAG){
             buf_info.lavel = buf_token.lavel;
@@ -23,9 +19,6 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
         map.push_back(buf_info);
         // plus opecode size
         base_addr += buf_token.size;        
-    }
-    for(int i=0;i<map.size();i++){
-        cout << map[i].lavel << " : 0x" << std::hex << map[i].addr << endl;
     }
     return map;
 }
@@ -114,11 +107,15 @@ TOKEN analysis_line(string asmcode_line){
 
     for(int i = 0;i < asmline_len;i++){
         // finish phaseになっていたらループを出る。
-        if(PAST_PHASE==FINISH_PHASE)break;
+        if(PAST_PHASE==FINISH_PHASE);
         // spaceをここで排除している。
         if(asmcode_line[i] != space[0]){
 
             buf += asmcode_line[i];
+            if(PAST_PHASE==FINISH_PHASE&&buf==nostr){
+                break;
+                cout << "err : operand over" << endl;
+            }
             if(i == (asmline_len-1)){
                 if(buf != nostr){
                     PAST_PHASE = input_token_info(&p,buf,PAST_PHASE);
@@ -155,7 +152,10 @@ vector<TOKEN> tokenize(string asmcode){
     lavel_map = lavel_mapping(token_vector);
 
     // opecode
-    //token_vector = input_opecode_info(token_vector,lavel_map);
+    token_vector = input_opecode_info(token_vector);
+
+    // operand
+    token_vector = input_lavel(token_vector,lavel_map);
 
     return token_vector;
 }

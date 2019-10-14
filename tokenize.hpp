@@ -35,10 +35,10 @@ typedef struct{
     string lavel;
     string opecodestr;
     string operandstr;
+    unsigned int size;
     // 実際にバイナリに書き込む情報
     unsigned char opecode;
     unsigned int operand;   
-    unsigned int size;
 }TOKEN;
 
 //ラベルの名前とアドレス情報
