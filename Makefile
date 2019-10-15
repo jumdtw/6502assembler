@@ -1,7 +1,7 @@
 CC = g++
 
 TARGET = asm65
-OBJ = asm65.o tokenize.o calc_addr.o input_hex_info.cpp
+OBJ = asm65.o tokenize.o calc_addr.o input_hex_info.o file_controller.o
 FLAG = -Wall
 
 $(TARGET): $(OBJ) Makefile
