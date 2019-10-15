@@ -71,6 +71,7 @@ void input_rts_hex(TOKEN *token){
 
 
 vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map){
+    vector<TOKEN> return_vector;
     TOKEN token;
     for(int i=0;i<token_vector.size();i++){
         token = token_vector[i];
@@ -82,8 +83,9 @@ vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> la
             }
             cout << "err : not found lavel : " << token.lavel << endl;
         }
-        
+        return_vector.push_back(token);
     }
+    return return_vector;
 }
 
 vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector){
@@ -97,4 +99,5 @@ vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector){
         if(check_jsr(token.lavel)){input_jsr_hex(&token);return_vector.push_back(token);continue;}
         if(check_rts(token.lavel)){input_rts_hex(&token);return_vector.push_back(token);continue;}
     }
+    return return_vector;
 }
