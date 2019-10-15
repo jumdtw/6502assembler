@@ -1,9 +1,11 @@
 #include"tokenize.hpp"
+#include"file_controller.hpp"
 #include<fstream>
 #include<iostream>
 #include<stdio.h>
 
 void debug_print(TOKEN *token){
+    
     cout << "Lavel : " << token->lavel << endl;
     cout << "Opecodestr : " << token->opecodestr << endl;
     cout << "Operandstr : " << token->operandstr << endl;
@@ -21,19 +23,16 @@ int main(int argc,char *argv[]){
         cout << "argument err" << endl;
         return 1;
     }
-
-    string asmcode,asmtext = argv[1];
-    vector<string> asmcodes;
-    std::ifstream ifs(asmtext);
-    if (ifs.fail()) {
-        std::cerr << "Failed to open file." << std::endl;
-        return -1;
+    //引数受け取り
+    string asmtext = argv[1];
+    //ファイル読み込み
+    vector<string> asmcodes = read_file(asmtext);
+    //構文解析
+    vector<TOKEN> token_vector = tokenize(asmcodes);
+    //
+    for(int i=0;i<token_vector.size();i++){
+        cout << "-------------------" << i << "---------------" << endl;
+        debug_print(&token_vector[i]);
     }
-    while (getline(ifs, asmcode)) {
-        asmcodes.push_back(asmcode);
-    }
-    vector<TOKEN> source = tokenize(asmcodes);
-    TOKEN ppp = source[1];
-    debug_print(&ppp);
     return 0;
 }

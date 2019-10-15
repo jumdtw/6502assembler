@@ -8,6 +8,10 @@ void input_lda_size(TOKEN *token){
         token->size = 0x03;
         return;
     }
+    // imm
+    if(token->Imm_FLAG){
+        token->size = 0x02;
+    }
     // check lda zero
     if(token->operand <= 0xff){
         token->size = 0x02;
@@ -35,7 +39,23 @@ void input_sta_size(TOKEN *token){
 }
 
 void input_ora_size(TOKEN *token){
-    token->size = 0x02;
+    // operand == lavel
+    if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
+        token->size = 0x03;
+        return;
+    }
+    // imm
+    if(token->Imm_FLAG){
+        token->size = 0x02;
+    }
+    // check lda zero
+    if(token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else{
+        token->size = 0x03;
+        return;
+    }
 }
 
 void input_jsr_size(TOKEN *token){
