@@ -62,6 +62,10 @@ void input_jsr_size(TOKEN *token){
     token->size = 0x03;
 }
 
+void input_jmp_size(TOKEN *token){
+    token->size = 0x03;    
+}
+
 void input_rts_size(TOKEN *token){
     token->size = 0x01;    
 }
@@ -88,6 +92,13 @@ bool check_ora(string str){
     return false;
 }
 
+bool check_jmp(string str){
+    if(str=="jmp"||str=="JMP"){
+        return true;
+    }
+    return false;
+}
+
 bool check_jsr(string str){
     if(str=="jsr"||str=="JSR"){
         return true;
@@ -107,6 +118,7 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector){
         if(check_lda(token_vector[i].opecodestr)){input_lda_size(&token_vector[i]);continue;}
         if(check_sta(token_vector[i].opecodestr)){input_sta_size(&token_vector[i]);continue;}
         if(check_ora(token_vector[i].opecodestr)){input_ora_size(&token_vector[i]);continue;}
+        if(check_jmp(token_vector[i].opecodestr)){input_jmp_size(&token_vector[i]);continue;}
         if(check_jsr(token_vector[i].opecodestr)){input_jsr_size(&token_vector[i]);continue;}
         if(check_rts(token_vector[i].opecodestr)){input_rts_size(&token_vector[i]);continue;}
     }

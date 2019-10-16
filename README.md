@@ -64,4 +64,9 @@ exception
 `ldA`
 などと書くとエラーが発生します。
 
+## メモ
+命令を追加するときは
+
+calc_addr.cpp calc_addr.hpp input_hex_info.cppに加筆する
+
 

@@ -1,6 +1,7 @@
 #include"file_controller.hpp"
 #include"tokenize.hpp"
 #include<fstream>
+#include<cstdio>
 
 std::vector<std::string> read_file(std::string asmtext){
     string asmcode;
@@ -16,6 +17,10 @@ std::vector<std::string> read_file(std::string asmtext){
     return asmcodes;
 }
 
-void write_file(vector<TOKEN> token_vector){
-
+void write_file(vector<TOKEN> token_vector,string asmtext){
+    ofstream ofs(asmtext, ios::binary);
+    ofs.write(reinterpret_cast<char *>(&token_vector[0].opecode),sizeof(token_vector[0].opecode));
+    if(ofs.bad()) {
+        cout << "error" << endl;
+    }
 }

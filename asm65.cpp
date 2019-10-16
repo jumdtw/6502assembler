@@ -19,7 +19,7 @@ void debug_print(TOKEN *token){
 
 int main(int argc,char *argv[]){
 
-    if(argc==1){
+    if(argc<=2){
         cout << "argument err" << endl;
         return 1;
     }
@@ -29,10 +29,12 @@ int main(int argc,char *argv[]){
     vector<string> asmcodes = read_file(asmtext);
     //構文解析
     vector<TOKEN> token_vector = tokenize(asmcodes);
-    //
+    //debug
     for(int i=0;i<token_vector.size();i++){
         cout << "-------------------" << i << "---------------" << endl;
         debug_print(&token_vector[i]);
     }
+    //write file
+    write_file(token_vector,argv[2]);
     return 0;
 }
