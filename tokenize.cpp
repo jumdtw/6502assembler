@@ -18,7 +18,12 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
             map.push_back(buf_info);
         }
         // plus opecode size
-        base_addr += buf_token.size;        
+        base_addr += buf_token.size;      
+        cout << buf_token.opecodestr << " : 0x" << hex << buf_token.size << " : 0x" << hex << base_addr << endl;
+    }
+    cout << "-------------------------------------------" << endl;
+    for (int i=0;i!=map.size();i++){
+        cout << map[i].lavel <<  " : 0x" << hex << map[i].addr << endl;
     }
     return map;
 }
@@ -47,6 +52,17 @@ void check_Imm(TOKEN *p){
         p->operandstr = p->operandstr.substr(1);
     }else{
         p->Imm_FLAG = false;
+    }
+}
+
+void check_Indirect(TOKEN *p){
+    const char Indi = '[';
+    if(p->operandstr.front() == Indi){
+        p->Indi_FLAG = true;
+        p->operandstr = p->operandstr.substr(1);
+        p->operandstr = p->operandstr.substr(0,p->operandstr.length()-1);
+    }else{
+        p->Indi_FLAG = false;
     }
 }
 
@@ -81,6 +97,7 @@ int input_token_info(TOKEN *p,string buf,int PAST_PHASE){
         PAST_PHASE = OPERAND_PHASE;
     }else if(PAST_PHASE==OPERAND_PHASE){
         p->operandstr = buf;
+        check_Indirect(p);
         check_Imm(p);
         check_hex_bin(p);
         if(p->Hex_FLAG || p->Bin_FLAG || p->Imm_FLAG){
@@ -109,11 +126,9 @@ TOKEN analysis_line(string asmcode_line){
         if(PAST_PHASE==FINISH_PHASE);
         // spaceをここで排除している。
         if(asmcode_line[i] != space[0]){
-
             buf += asmcode_line[i];
             if(PAST_PHASE==FINISH_PHASE&&buf==nostr){
                 break;
-                cout << "err : operand over" << endl;
             }
             if(i == (asmline_len-1)){
                 if(buf != nostr){
@@ -123,7 +138,7 @@ TOKEN analysis_line(string asmcode_line){
 
         //buf == nostrは 連続でspaceがならんでいる状態であるため
         }else if(buf != nostr){
-
+            
             PAST_PHASE = input_token_info(&p,buf,PAST_PHASE);
             buf = "";
         
@@ -149,15 +164,11 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
 
     // 一行ごとのサイズを割り出す
     token_vector = input_addr_size(token_vector);
-
     // 上からvector をなぞって tokenのlavel情報からlavel mapを生成する。
     lavel_map = lavel_mapping(token_vector);
-
     // opecode
     token_vector = input_opecode_info(token_vector);
-
     // operand
     token_vector = input_lavel(token_vector,lavel_map);
-
     return token_vector;
 }

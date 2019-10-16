@@ -31,6 +31,8 @@ typedef struct{
     bool Bin_FLAG;
     //hex
     bool Hex_FLAG;
+    //indirect
+    bool Indi_FLAG;
     // 解析時に使う情報
     string lavel;
     string opecodestr;

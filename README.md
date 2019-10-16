@@ -67,6 +67,6 @@ exception
 ## メモ
 命令を追加するときは
 
-calc_addr.cpp calc_addr.hpp input_hex_info.cppに加筆する
+calc_addr.cpp calc_addr.hpp input_hex_info.cpp input_hex_info.hppに加筆する
 
 

@@ -1,25 +1,34 @@
-lda $4015		
-ora #%00000111	
-sta $4015    
-lda #$00
-sta $4008
-lda #$9f
-sta $400A
-lda #$00
-sta $400b
-lda #%10111101  
-sta $4000		
-lda #$00     
-sta $4001	    
-lda #$9f    
-sta $4002   
-lda #%00000000     
-sta $4003    
-lda #%10111101  
-sta $4004		
-lda #$00        
-sta $4005	    
-lda #$9f     
-sta $4006    
-lda #%00000000    
-sta $4007   
+                lda $4015		
+                ora #%00000111	
+                sta $4015  
+
+                lda #%10111101 
+                sta $4000		
+                lda #$00     
+                sta $4001	    
+
+                lda #%10111101  
+                sta $4004		
+                lda #$00        
+                sta $4005	    
+
+.sound          lda #$9f    
+                sta $4002   
+                lda #%00000000     
+                sta $4003
+
+
+                jmp delay_30
+
+.lala           lda #$70    
+                sta $4002   
+                lda #%00000000     
+                sta $4003
+
+
+.delay_30       lda #$30
+                sta $0
+                dec $0
+                lda $0
+                beq #$fa
+                jmp lala

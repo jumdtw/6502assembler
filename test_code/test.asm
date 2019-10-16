@@ -1,2 +1,2 @@
-.lavel  ora #%00000111
+.lavel  lda [$4016]
         
