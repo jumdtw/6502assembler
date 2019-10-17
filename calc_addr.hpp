@@ -12,6 +12,7 @@ bool check_ora(string str);
 bool check_jmp(string str);
 bool check_jsr(string str);
 bool check_rts(string str);
+bool check_rti(string str);
 bool check_dec(string str);
 bool check_beq(string str);
 

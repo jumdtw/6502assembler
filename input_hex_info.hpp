@@ -22,6 +22,8 @@
 #define JSR 0x20
 //rts
 #define RTS 0x60
+//rti
+#define RTI 0x40
 //dec
 #define DEC_ABS 0xce
 #define DEC_ZERO 0xc6

@@ -101,6 +101,10 @@ void input_rts_size(TOKEN *token){
     token->size = 0x01;    
 }
 
+void input_rti_size(TOKEN *token){
+    token->size = 0x01;    
+}
+
 void input_dec_size(TOKEN *token){
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
@@ -174,6 +178,13 @@ bool check_rts(string str){
     return false;
 }
 
+bool check_rti(string str){
+    if(str=="rts"||str=="RTS"){
+        return true;
+    }
+    return false;
+}
+
 bool check_dec(string str){
     if(str=="dec"||str=="DEC"){
         return true;
@@ -199,6 +210,7 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector){
         if(check_jmp(token_vector[i].opecodestr)){input_jmp_size(&token_vector[i]);continue;}
         if(check_jsr(token_vector[i].opecodestr)){input_jsr_size(&token_vector[i]);continue;}
         if(check_rts(token_vector[i].opecodestr)){input_rts_size(&token_vector[i]);continue;}
+        if(check_rti(token_vector[i].opecodestr)){input_rti_size(&token_vector[i]);continue;}
         if(check_dec(token_vector[i].opecodestr)){input_dec_size(&token_vector[i]);continue;}
         if(check_beq(token_vector[i].opecodestr)){input_beq_size(&token_vector[i]);continue;}
     }

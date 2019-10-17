@@ -125,6 +125,11 @@ void input_rts_hex(TOKEN *token){
     return;
 }
 
+void input_rti_hex(TOKEN *token){
+    token->opecode = RTI;
+    return;
+}
+
 void input_dec_hex(TOKEN *token){
     // lavel 
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
@@ -181,6 +186,7 @@ vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector){
         if(check_jmp(token.opecodestr)){input_jmp_hex(&token);return_vector.push_back(token);}
         if(check_jsr(token.opecodestr)){input_jsr_hex(&token);return_vector.push_back(token);}
         if(check_rts(token.opecodestr)){input_rts_hex(&token);return_vector.push_back(token);}
+        if(check_rti(token.opecodestr)){input_rti_hex(&token);return_vector.push_back(token);}
         if(check_dec(token.opecodestr)){input_dec_hex(&token);return_vector.push_back(token);}
         if(check_beq(token.opecodestr)){input_beq_hex(&token);return_vector.push_back(token);}
     }

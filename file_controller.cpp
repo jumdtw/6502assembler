@@ -15,15 +15,14 @@ unsigned char return_edian_low(unsigned int code){
 }
 
 bool check_space_tab(string text){
-    string space = " ", nostr="", tab = "\t";
-    int count = 0;
-    if(text==space){return false;}
+    string space = " ";
+    int c = 0;
     for(int i=0;i<text.length();i++){
-        if(text==space||text==tab){
-            count += 1;
+        if(text[i]==space[0]){
+            c++;
         }
     }
-    if(count==text.length()){return false;}
+    if(text.length()==c){return false;}
     return true;
 }
 
@@ -52,16 +51,19 @@ void write_file(vector<TOKEN> token_vector,string asmtext){
     unsigned char pate = 0xff,zero = 0x00,end_0x80 = 0x80;
 
     for(int i=0;i<token_vector.size();i++){
+        cout << "0x" << hex << (unsigned int)token_vector[i].opecode << endl;
         ofs.write(reinterpret_cast<char *>(&token_vector[i].opecode),sizeof(token_vector[i].opecode));
         file_size_count += 1;
         if(token_vector[i].size >= 2){
             low = return_edian_low(token_vector[i].operand);
             ofs.write(reinterpret_cast<char *>(&low),sizeof(low));
+            cout << "0x" << hex << (unsigned int)low << endl;
             file_size_count += 1;
         }
         if(token_vector[i].size >= 3){
             high = return_edian_high(token_vector[i].operand);
             ofs.write(reinterpret_cast<char *>(&high),sizeof(high));
+            cout << "0x" << hex << (unsigned int)high << endl;
             file_size_count += 1;
         }
     }
