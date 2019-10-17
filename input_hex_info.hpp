@@ -9,6 +9,8 @@
 #define LDA_INDI 0xa1
 // ldx
 #define LDX_IMM 0xa2
+#define LDX_ABS 0xae
+#define LDX_ZERO 0xa6
 //sta
 #define STA_ABS 0x8d
 #define STA_ZERO 0x85
@@ -29,6 +31,9 @@
 #define DEC_ZERO 0xc6
 //beq
 #define BEQ 0xf0
+//inc
+#define INC_ABS 0xee
+#define INC_ZERO 0xe6
 
 
 vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map);

@@ -1,3 +1,3 @@
-.lavel  lda [$4016]
-
-        sta $4016
+.lavel  ldx $1
+        ldx $2000
+        ldx #$01

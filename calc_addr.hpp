@@ -15,5 +15,6 @@ bool check_rts(string str);
 bool check_rti(string str);
 bool check_dec(string str);
 bool check_beq(string str);
+bool check_inc(string str);
 
 #endif

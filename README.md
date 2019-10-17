@@ -70,3 +70,11 @@ exception
 calc_addr.cpp calc_addr.hpp input_hex_info.cpp input_hex_info.hppに加筆する
 
 
+lda indirect の意味を勘違いしていた。
+例えば
+lda [$00]　としたときは
+
+$00 + xレジスタの値から値を引き出すという意味だった。
+なので、メモリの値を順々にロードしたい場合はxレジスタに加算をしていけばよい
+
+

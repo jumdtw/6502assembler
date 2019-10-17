@@ -41,7 +41,6 @@ void input_ldx_size(TOKEN *token){
         token->size = 0x02;
         return;
     }
-    /*
     // check lda zero
     if(token->operand <= 0xff){
         token->size = 0x02;
@@ -50,7 +49,6 @@ void input_ldx_size(TOKEN *token){
         token->size = 0x03;
         return;
     }
-    */
 }
 
 void input_sta_size(TOKEN *token){
@@ -125,6 +123,27 @@ void input_beq_size(TOKEN *token){
     token->size = 0x02;    
 }
 
+void input_inc_size(TOKEN *token){
+    /*
+    // operand == lavel
+    if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
+        token->size = 0x03;
+        return;
+    }
+    // imm
+    if(token->Imm_FLAG){
+        token->size = 0x02;
+    }
+    */
+    // check lda zero
+    if(token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else{
+        token->size = 0x03;
+        return;
+    }
+}
 
 // -----------------checker-------------------------
 
@@ -179,7 +198,7 @@ bool check_rts(string str){
 }
 
 bool check_rti(string str){
-    if(str=="rts"||str=="RTS"){
+    if(str=="rti"||str=="RTI"){
         return true;
     }
     return false;
@@ -199,6 +218,12 @@ bool check_beq(string str){
     return false;
 }
 
+bool check_inc(string str){
+    if(str=="inc"||str=="INC"){
+        return true;
+    }
+    return false;
+}
 
 vector<TOKEN> input_addr_size(vector<TOKEN> token_vector){
     
@@ -213,6 +238,7 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector){
         if(check_rti(token_vector[i].opecodestr)){input_rti_size(&token_vector[i]);continue;}
         if(check_dec(token_vector[i].opecodestr)){input_dec_size(&token_vector[i]);continue;}
         if(check_beq(token_vector[i].opecodestr)){input_beq_size(&token_vector[i]);continue;}
+        if(check_inc(token_vector[i].opecodestr)){input_inc_size(&token_vector[i]);continue;}
     }
     return token_vector;
 }

@@ -46,21 +46,21 @@ void input_ldx_hex(TOKEN *token){
         token->opecode = LDX_IMM;
         return;
     }
-    /*
+    
     // hex abs or zero
     if(token->Hex_FLAG&&token->operand <= 0xff){
-        token->opecode = LDA_ZERO;
+        token->opecode = LDX_ZERO;
         return;
     }else if(token->Hex_FLAG&&token->operand > 0xff){
-        token->opecode = LDA_ABS;
+        token->opecode = LDX_ABS;
         return;
     }
     // bin
     if(token->Bin_FLAG){
-        token->opecode = LDA_ZERO;
+        token->opecode = LDX_ZERO;
         return;
     }
-    */
+    
 }
 
 void input_sta_hex(TOKEN *token){
@@ -155,6 +155,29 @@ void input_beq_hex(TOKEN *token){
     token->opecode = BEQ;
 }
 
+void input_inc_hex(TOKEN *token){
+    /*
+    // lavel 
+    if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
+        token->opecode = ORA_ABS;
+        return;
+    }
+    */
+    // hex abs or zero
+    if(token->Hex_FLAG&&token->operand <= 0xff){
+        token->opecode = INC_ZERO;
+        return;
+    }else if(token->Hex_FLAG&&token->operand > 0xff){
+        token->opecode = INC_ABS;
+        return;
+    }
+    // bin
+    if(token->Bin_FLAG){
+        token->opecode = INC_ZERO;
+        return;
+    }
+}
+
 
 
 vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map){
@@ -189,6 +212,7 @@ vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector){
         if(check_rti(token.opecodestr)){input_rti_hex(&token);return_vector.push_back(token);}
         if(check_dec(token.opecodestr)){input_dec_hex(&token);return_vector.push_back(token);}
         if(check_beq(token.opecodestr)){input_beq_hex(&token);return_vector.push_back(token);}
+        if(check_inc(token.opecodestr)){input_inc_hex(&token);return_vector.push_back(token);}
     }
     return return_vector;
 }
