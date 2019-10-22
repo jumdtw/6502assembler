@@ -31,8 +31,8 @@ int main(int argc,char *argv[]){
     vector<TOKEN> token_vector = tokenize(asmcodes);
     //debug
     for(int i=0;i<token_vector.size();i++){
-        cout << "-------------------" << i << "---------------" << endl;
-        debug_print(&token_vector[i]);
+        //cout << "-------------------" << i << "---------------" << endl;
+        //debug_print(&token_vector[i]);
     }
     //write file
     write_file(token_vector,argv[2]);

@@ -9,7 +9,14 @@ void input_lda_size(TOKEN *token){
         token->size = 0x03;
         return;
     }
-    if(token->Indi_FLAG){
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->size = 0x03;
+        return;
+    }else if(token->Indi_FLAG){
         token->size = 0x02;
         return;
     }

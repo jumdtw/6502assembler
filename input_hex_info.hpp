@@ -5,7 +5,9 @@
 //lda
 #define LDA_IMM 0xa9
 #define LDA_ABS 0xad
+#define LDA_ABS_X 0xbd
 #define LDA_ZERO 0xa5
+#define LDA_ZERO_X 0xb5
 #define LDA_INDI 0xa1
 // ldx
 #define LDX_IMM 0xa2

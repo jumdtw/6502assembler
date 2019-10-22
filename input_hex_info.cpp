@@ -9,11 +9,18 @@ void input_lda_hex(TOKEN *token){
         token->opecode = LDA_ABS;
         return;
     }
-    if(token->Indi_FLAG){
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->opecode = LDA_ZERO_X;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->opecode = LDA_ABS_X;
+        return;
+    }else if(token->Indi_FLAG){
         token->opecode = LDA_INDI;
         return;
     }
-    // imm or indirect
+    // imm 
     if(token->Imm_FLAG){
         token->opecode = LDA_IMM;
         return;
