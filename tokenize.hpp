@@ -19,6 +19,14 @@ using namespace std;
 #define OPERAND_PHASE 114
 #define FINISH_PHASE 111
 
+enum var_type{
+    IMMDIATE=255,
+    ADDRESS,
+    VARIABLE,
+    OPERATOR,
+    ERROR,
+};
+
 
 //トークン
 typedef struct{
@@ -48,6 +56,20 @@ typedef struct{
     string lavel;
     unsigned int addr;
 }LAVEL_ADDER_INFO;
+
+
+//変数の名前と即値
+typedef struct{
+    string variable_name;
+    unsigned int imm;
+}VARIABLE_INFO;
+
+typedef struct{
+    int num;
+    string value_str;
+    unsigned int value_int;
+}VAR_TOKEN;
+
 
 
 vector<TOKEN> tokenize(vector<string> asmcode);

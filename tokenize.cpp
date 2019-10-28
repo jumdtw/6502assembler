@@ -1,6 +1,7 @@
 #include"tokenize.hpp"
 #include"calc_addr.hpp"
 #include"input_hex_info.hpp"
+#include"tokenize_var.hpp"
 
 
 
@@ -28,51 +29,48 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
     return map;
 }
 
-
-void check_hex_bin(TOKEN *p){
-    const char Hex = '$',Bin = '%';
-    if(p->operandstr.front() == Hex){
-        p->Hex_FLAG = true;
-        p->Bin_FLAG = false;
-        p->operandstr = p->operandstr.substr(1);
-    }else if(p->operandstr.front() == Bin){
-        p->Hex_FLAG = false;
-        p->Bin_FLAG = true;
-        p->operandstr = p->operandstr.substr(1);
-    }else{
-        p->Hex_FLAG = false;
-        p->Bin_FLAG = false;
+bool check_bin(string p){
+    const char Bin = '%';
+    if(p.front() == Bin){
+        return true;
     }
+    return false;
 }
 
-void check_Imm(TOKEN *p){
+bool check_hex(string p){
+    const char Hex = '$';
+    if(p.front() == Hex){
+        return true;
+    }
+    return false;
+}
+
+
+bool check_Imm(string p){
     const char Imm = '#';
-    if(p->operandstr.front() == Imm){
-        p->Imm_FLAG = true;
-        p->operandstr = p->operandstr.substr(1);
+    if(p.front() == Imm){
+        return true;
     }else{
-        p->Imm_FLAG = false;
+        return false;
     }
 }
 
-void check_Indirect(TOKEN *p){
+bool check_Indirect(string p){
     const char Indi = '[';
-    if(p->operandstr.front() == Indi){
-        p->Indi_FLAG = true;
-        p->operandstr = p->operandstr.substr(1);
-        p->operandstr = p->operandstr.substr(0,p->operandstr.length()-1);
+    if(p.front() == Indi){
+        return true;
     }else{
-        p->Indi_FLAG = false;
+        return false;
     }
 }
 
-void change_str_chr(TOKEN *token){
-    if(token->Hex_FLAG){             // 16進数の場合
-        token->operand = (unsigned int)stoi(((token->operandstr).c_str()),nullptr,16);
-    }else if(token->Bin_FLAG){       // 2進数の場合
-        token->operand = (unsigned int)stoi(((token->operandstr).c_str()),nullptr,2);
-    }else if(token->Imm_FLAG){       // 10進数の場合(hexでもbinでもないのにimmなのは10進数しかありえない。すべてfalseの場合はlavelである。)
-        token->operand = (unsigned int)atoi(token->operandstr.c_str());
+unsigned int change_str_chr(string token,bool Hex_FLAG,bool Bin_FLAG,bool Imm_FLAG){
+    if(Hex_FLAG){             // 16進数の場合
+        return (unsigned int)stoi(((token).c_str()),nullptr,16);
+    }else if(Bin_FLAG){       // 2進数の場合
+        return (unsigned int)stoi(((token).c_str()),nullptr,2);
+    }else if(Imm_FLAG){       // 10進数の場合(hexでもbinでもないのにimmなのは10進数しかありえない。すべてfalseの場合はlavelである。)
+        return (unsigned int)atoi(token.c_str());
     }
 }
 
@@ -97,12 +95,39 @@ int input_token_info(TOKEN *p,string buf,int PAST_PHASE){
         PAST_PHASE = OPERAND_PHASE;
     }else if(PAST_PHASE==OPERAND_PHASE){
         p->operandstr = buf;
-        check_Indirect(p);
-        check_Imm(p);
-        check_hex_bin(p);
-        if(p->Hex_FLAG || p->Bin_FLAG || p->Imm_FLAG){
-            change_str_chr(p);
+        
+        if(check_Indirect(p->operandstr)){
+            p->Indi_FLAG = true;
+            p->operandstr = p->operandstr.substr(1);
+            p->operandstr = p->operandstr.substr(0,p->operandstr.length()-1);
+        }else{
+            p->Indi_FLAG = false;
         }
+
+        if(check_Imm(p->operandstr)){
+            p->Imm_FLAG = true;
+            p->operandstr = p->operandstr.substr(1);
+        }else{
+            p->Imm_FLAG = false;
+        }
+
+        if(check_hex(p->operandstr)){
+            p->Hex_FLAG = true;
+            p->Bin_FLAG = false;
+            p->operandstr = p->operandstr.substr(1);
+        }else if(check_bin(p->operandstr)){
+            p->Hex_FLAG = false;
+            p->Bin_FLAG = true;
+            p->operandstr = p->operandstr.substr(1);
+        }else{
+            p->Hex_FLAG = false;
+            p->Bin_FLAG = false;
+        }
+
+        if(p->Hex_FLAG || p->Bin_FLAG || p->Imm_FLAG){
+            p->operand = change_str_chr(p->operandstr,p->Hex_FLAG,p->Bin_FLAG,p->Imm_FLAG);
+        }
+
         PAST_PHASE = FINISH_PHASE;
     }else if(PAST_PHASE==FINISH_PHASE){
         cout << "err analysis" << endl;
@@ -110,13 +135,11 @@ int input_token_info(TOKEN *p,string buf,int PAST_PHASE){
     return PAST_PHASE;
 }
 
-
-
 TOKEN analysis_line(string asmcode_line){
     // 1 TOKEN 1行文のアセンブリコードに相当する。
     TOKEN p;
     int asmline_len = asmcode_line.length();
-    string buf = "",space = " ",nostr = "";
+    string buf = "",space = " ",nostr = "",coron = ":";
     
     // 現在のフェーズをあらわす。初期値はラベルから。
     int PAST_PHASE = 411;
@@ -147,6 +170,109 @@ TOKEN analysis_line(string asmcode_line){
     return p;
 }
 
+bool check_variable(string text){
+    string variable = ":",space=" ";
+    for(int i=0;i<text.length();i++){
+        if(text[i]==space[0]){
+            continue;
+        }
+        if(text[i]==variable[0]){
+            return true;
+        }
+    }
+    return false;
+}
+
+vector<VAR_TOKEN> new_token_variable(string p,vector<VAR_TOKEN> var_token_vector){
+    VAR_TOKEN var_token;
+    string nostr="";
+    if(p!=nostr){
+        bool hex=false,bin=false,imm=false;
+        if(check_Imm(p)){
+            imm = true;
+            p = p.substr(1);
+        }
+        if(check_hex(p)){
+            hex = true;
+            p = p.substr(1);
+        }
+        if(check_bin(p)){
+            bin = true;
+            p = p.substr(1);
+        }
+
+        if(isdigit_my(p)){
+            if(imm){
+                var_token.num = IMMDIATE;
+            }else if(hex||bin){
+                var_token.num = ADDRESS;
+            }else{
+                var_token.num = ERROR;
+                var_token_vector.push_back(var_token);
+            }
+            var_token.value_int = change_str_chr(p,hex,bin,imm);
+            p = "";
+            var_token_vector.push_back(var_token);
+        }else{
+            var_token.num = VARIABLE;
+            var_token.value_str = p;
+            p = "";
+            var_token_vector.push_back(var_token);
+        }
+    }
+    return var_token_vector;
+}
+
+vector<VAR_TOKEN> tokenize_variable(int start,string text){
+    vector<VAR_TOKEN> var_token_vector;
+    string p = "",nostr="";
+    for(int i=start;i<text.length();i++){
+        VAR_TOKEN var_token;
+        //space
+        if(text[i]==' '){
+            var_token_vector = new_token_variable(p,var_token_vector);
+            continue;
+        }
+        //operator
+        if(text[i]=='='){
+            var_token_vector = new_token_variable(p,var_token_vector);
+            var_token.num = OPERATOR;
+            var_token.value_str = text[i]; 
+            var_token_vector.push_back(var_token);
+            continue;
+        }
+        p += text[i];
+    }
+    for(int i=0;i<var_token_vector.size();i++){
+        VAR_TOKEN t = var_token_vector[i];
+        cout << "num : " << t.num << endl;
+        cout << "value_str : " << t.value_str << endl;
+        cout << "value_int : " << t.value_int << endl;
+    }
+    return var_token_vector;
+}
+
+vector<VARIABLE_INFO> mapping_variable(string text,vector<VARIABLE_INFO> variable_map){
+    VARIABLE_INFO var_info;
+    vector<VAR_TOKEN> var_token;
+    int start;
+    string variable = ":",space=" ";
+    // search variable
+    for(int i=0;i<text.length();i++){
+        if(text[i]==space[0]){
+            continue;
+        }
+        if(text[i]==variable[0]){
+            start = i+1;
+            break;
+        }
+    }
+    var_token = tokenize_variable(start,text);
+    
+
+    return variable_map;
+}
+
 
 vector<TOKEN> tokenize(vector<string> asmcodes){
     //必要な変数
@@ -154,7 +280,23 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
     vector<TOKEN> token_vector;
     // このlavel mapを参照することでlavelのアドレスがわかる。
     vector<LAVEL_ADDER_INFO> lavel_map;
+    // 変数のマップ
+    vector<VARIABLE_INFO> variable_map;
 
+    // 変数のマップを作成する。また、その際変数宣言の構文は削除する。
+    vector<string> buf_asmcodes;
+    for(int i=0;i!=asmcodes.size();i++){
+        string asmcode = asmcodes[i];
+        if(check_variable){
+            variable_map = mapping_variable(asmcode,variable_map);
+        }else{
+            buf_asmcodes.push_back(asmcode);
+        }
+        
+    }
+    asmcodes = buf_asmcodes;
+
+    // 文字列全体を検査する。
     for(int i=0;i!=asmcodes.size();i++){
         string asmcode = asmcodes[i];
         // アセンブリコード一行分をここで解析する
