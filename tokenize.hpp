@@ -1,13 +1,13 @@
 #ifndef TOKENIZE_H
 #define TOKENIZE_H
 
-using namespace std;
-
 #include<string>
 #include<sstream>
 #include<istream>
 #include<iostream>
 #include<vector>
+
+using namespace std;
 
 // token num
 #define LAVEL 56
@@ -19,12 +19,13 @@ using namespace std;
 #define OPERAND_PHASE 114
 #define FINISH_PHASE 111
 
+//#define IMMDIATE 255
 enum var_type{
     IMMDIATE=255,
-    ADDRESS,
-    VARIABLE,
-    OPERATOR,
-    ERROR,
+    ADDRESS,    //256
+    VARIABLE,   //257
+    OPERATOR,   //258
+    ERROR,      //259
 };
 
 
@@ -60,8 +61,9 @@ typedef struct{
 
 //変数の名前と即値
 typedef struct{
+    int value_imm_or_addr;
     string variable_name;
-    unsigned int imm;
+    unsigned int value;
 }VARIABLE_INFO;
 
 typedef struct{
@@ -69,8 +71,6 @@ typedef struct{
     string value_str;
     unsigned int value_int;
 }VAR_TOKEN;
-
-
 
 vector<TOKEN> tokenize(vector<string> asmcode);
 

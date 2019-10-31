@@ -2,8 +2,9 @@
 #include"calc_addr.hpp"
 #include"input_hex_info.hpp"
 #include"tokenize_var.hpp"
+#include"variable_parse.hpp"
 
-
+using namespace std;
 
 vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
     vector<LAVEL_ADDER_INFO> map;
@@ -20,7 +21,7 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
         }
         // plus opecode size
         base_addr += buf_token.size;      
-        cout << buf_token.opecodestr << " : 0x" << hex << buf_token.size << " : 0x" << hex << base_addr << endl;
+        //cout << buf_token.opecodestr << " : 0x" << hex << buf_token.size << " : 0x" << hex << base_addr << endl;
     }
     cout << "-------------------------------------------" << endl;
     for (int i=0;i!=map.size();i++){
@@ -30,16 +31,16 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
 }
 
 bool check_bin(string p){
-    const char Bin = '%';
-    if(p.front() == Bin){
+    string Bin = "%";
+    if(p.front() == Bin[0]){
         return true;
     }
     return false;
 }
 
 bool check_hex(string p){
-    const char Hex = '$';
-    if(p.front() == Hex){
+    string Hex = "$";
+    if(p.front() == Hex[0]){
         return true;
     }
     return false;
@@ -47,8 +48,8 @@ bool check_hex(string p){
 
 
 bool check_Imm(string p){
-    const char Imm = '#';
-    if(p.front() == Imm){
+    string Imm = "#";
+    if(p.front() == Imm[0]){
         return true;
     }else{
         return false;
@@ -56,8 +57,8 @@ bool check_Imm(string p){
 }
 
 bool check_Indirect(string p){
-    const char Indi = '[';
-    if(p.front() == Indi){
+    string Indi = "[";
+    if(p.front() == Indi[0]){
         return true;
     }else{
         return false;
@@ -72,6 +73,7 @@ unsigned int change_str_chr(string token,bool Hex_FLAG,bool Bin_FLAG,bool Imm_FL
     }else if(Imm_FLAG){       // 10進数の場合(hexでもbinでもないのにimmなのは10進数しかありえない。すべてfalseの場合はlavelである。)
         return (unsigned int)atoi(token.c_str());
     }
+    return 1;
 }
 
 int input_token_info(TOKEN *p,string buf,int PAST_PHASE){
@@ -171,11 +173,8 @@ TOKEN analysis_line(string asmcode_line){
 }
 
 bool check_variable(string text){
-    string variable = ":",space=" ";
+    string variable = ":";
     for(int i=0;i<text.length();i++){
-        if(text[i]==space[0]){
-            continue;
-        }
         if(text[i]==variable[0]){
             return true;
         }
@@ -211,12 +210,10 @@ vector<VAR_TOKEN> new_token_variable(string p,vector<VAR_TOKEN> var_token_vector
                 var_token_vector.push_back(var_token);
             }
             var_token.value_int = change_str_chr(p,hex,bin,imm);
-            p = "";
             var_token_vector.push_back(var_token);
         }else{
             var_token.num = VARIABLE;
             var_token.value_str = p;
-            p = "";
             var_token_vector.push_back(var_token);
         }
     }
@@ -228,14 +225,21 @@ vector<VAR_TOKEN> tokenize_variable(int start,string text){
     string p = "",nostr="";
     for(int i=start;i<text.length();i++){
         VAR_TOKEN var_token;
+        if(i==(text.length()-1)){
+            var_token_vector = new_token_variable(p,var_token_vector);
+            p = "";
+            continue;
+        }
         //space
         if(text[i]==' '){
             var_token_vector = new_token_variable(p,var_token_vector);
+            p = "";
             continue;
         }
         //operator
         if(text[i]=='='){
             var_token_vector = new_token_variable(p,var_token_vector);
+            p = "";
             var_token.num = OPERATOR;
             var_token.value_str = text[i]; 
             var_token_vector.push_back(var_token);
@@ -252,9 +256,10 @@ vector<VAR_TOKEN> tokenize_variable(int start,string text){
     return var_token_vector;
 }
 
+
 vector<VARIABLE_INFO> mapping_variable(string text,vector<VARIABLE_INFO> variable_map){
     VARIABLE_INFO var_info;
-    vector<VAR_TOKEN> var_token;
+    vector<VAR_TOKEN> var_token_vector;
     int start;
     string variable = ":",space=" ";
     // search variable
@@ -267,8 +272,9 @@ vector<VARIABLE_INFO> mapping_variable(string text,vector<VARIABLE_INFO> variabl
             break;
         }
     }
-    var_token = tokenize_variable(start,text);
+    var_token_vector = tokenize_variable(start,text);
     
+    variable_map = variable_parse(variable_map,var_token_vector);
 
     return variable_map;
 }
@@ -287,12 +293,11 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
     vector<string> buf_asmcodes;
     for(int i=0;i!=asmcodes.size();i++){
         string asmcode = asmcodes[i];
-        if(check_variable){
+        if(check_variable(asmcode)){
             variable_map = mapping_variable(asmcode,variable_map);
-        }else{
-            buf_asmcodes.push_back(asmcode);
+            continue;
         }
-        
+        buf_asmcodes.push_back(asmcode);
     }
     asmcodes = buf_asmcodes;
 
