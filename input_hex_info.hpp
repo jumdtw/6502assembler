@@ -38,7 +38,7 @@
 #define INC_ZERO 0xe6
 
 
-vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map);
-vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector);
+vector<TOKEN> input_lavel_or_variable(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map,vector<VARIABLE_INFO> variable_map);
+vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map);
 
 #endif

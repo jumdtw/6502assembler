@@ -2,11 +2,23 @@
 #include"input_hex_info.hpp"
 #include"calc_addr.hpp"
 
-void input_lda_hex(TOKEN *token){
+void input_lda_hex(TOKEN *token,vector<VARIABLE_INFO> variable_map){
     
-    // lavel 
+    // lavel or variable
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
-        token->opecode = LDA_ABS;
+        for(int i=0;i<variable_map.size();i++){
+            if(token->operandstr==variable_map[i].variable_name){
+                if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                    token->opecode = LDA_IMM;
+                    return;
+                }
+            }
+        }
+        if(token->size==0x02){
+            token->opecode = LDA_ZERO;
+        }else{
+            token->opecode = LDA_ABS;
+        }
         return;
     }
     // indirect 
@@ -71,9 +83,13 @@ void input_ldx_hex(TOKEN *token){
 }
 
 void input_sta_hex(TOKEN *token){
-    // lavel 
+    // lavel or variable
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
-        token->opecode = STA_ABS;
+        if(token->size==0x02){
+            token->opecode = STA_ZERO;
+        }else{
+            token->opecode = STA_ABS;
+        }
         return;
     }
     // hex abs or zero
@@ -187,7 +203,7 @@ void input_inc_hex(TOKEN *token){
 
 
 
-vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map){
+vector<TOKEN> input_lavel_or_variable(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map,vector<VARIABLE_INFO> variable_map){
     vector<TOKEN> return_vector;
     TOKEN token;
     for(int i=0;i<token_vector.size();i++){
@@ -198,18 +214,24 @@ vector<TOKEN> input_lavel(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> la
                     token.operand = lavel_map[k].addr;
                 }
             }
+            for(int k=0;k<variable_map.size();k++){
+                if(variable_map[k].variable_name == token.operandstr){
+                    token.operand = variable_map[k].value;
+                }
+            }
+
         }
         return_vector.push_back(token);
     }
     return return_vector;
 }
 
-vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector){
+vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map){
     vector<TOKEN> return_vector;
     TOKEN token;
     for(int i=0;i<token_vector.size();i++){
         token = token_vector[i];
-        if(check_lda(token.opecodestr)){input_lda_hex(&token);return_vector.push_back(token);}
+        if(check_lda(token.opecodestr)){input_lda_hex(&token,variable_map);return_vector.push_back(token);}
         if(check_ldx(token.opecodestr)){input_ldx_hex(&token);return_vector.push_back(token);}
         if(check_sta(token.opecodestr)){input_sta_hex(&token);return_vector.push_back(token);}
         if(check_ora(token.opecodestr)){input_ora_hex(&token);return_vector.push_back(token);}

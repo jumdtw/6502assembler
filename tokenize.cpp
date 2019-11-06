@@ -226,6 +226,7 @@ vector<VAR_TOKEN> tokenize_variable(int start,string text){
     for(int i=start;i<text.length();i++){
         VAR_TOKEN var_token;
         if(i==(text.length()-1)){
+            p += text[i];
             var_token_vector = new_token_variable(p,var_token_vector);
             p = "";
             continue;
@@ -314,8 +315,8 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
     // 上からvector をなぞって tokenのlavel情報からlavel mapを生成する。
     lavel_map = lavel_mapping(token_vector);
     // opecode
-    token_vector = input_opecode_info(token_vector);
+    token_vector = input_opecode_info(token_vector,variable_map);
     // operand
-    token_vector = input_lavel(token_vector,lavel_map);
+    token_vector = input_lavel_or_variable(token_vector,lavel_map,variable_map);
     return token_vector;
 }

@@ -1,11 +1,11 @@
-:delay = #$444
+:delay = #$44
 
 .reset          lda #%00000001
                 sta $4015
                 ;oppai
                 lda #%10100001                        
                 sta $4000	                       
-                lda #$00                              
+                lda delay                            
                 sta $4001	                       
 ;unnschi
                 lda #$ca

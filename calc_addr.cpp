@@ -56,25 +56,6 @@ void input_lda_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
 
 void input_ldx_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
 
-    // operand == variable
-    for(int i=0;i<variable_map.size();i++){
-        if(variable_map[i].variable_name==token->operandstr){
-
-            if(variable_map[i].value_imm_or_addr==IMMDIATE){
-                token->size = 0x02;
-                return;
-            }
-            if(variable_map[i].value_imm_or_addr==ADDRESS){
-                if(variable_map[i].value > 0xff){
-                    token->size = 0x03;
-                }else{
-                    token->size = 0x02;
-                }
-                return;
-            }
-        }
-    }
-
     /*
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
