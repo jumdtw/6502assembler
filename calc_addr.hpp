@@ -3,7 +3,7 @@
 
 #include"tokenize.hpp"
 
-vector<TOKEN> input_addr_size(vector<TOKEN> token_vector);
+vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map);
 
 bool check_lda(string str);
 bool check_ldx(string str);

@@ -310,7 +310,7 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
     }
 
     // 一行ごとのサイズを割り出す
-    token_vector = input_addr_size(token_vector);
+    token_vector = input_addr_size(token_vector,variable_map);
     // 上からvector をなぞって tokenのlavel情報からlavel mapを生成する。
     lavel_map = lavel_mapping(token_vector);
     // opecode

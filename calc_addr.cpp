@@ -2,7 +2,26 @@
 #include"tokenize.hpp"
 
 
-void input_lda_size(TOKEN *token){
+void input_lda_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
+
+    // operand == variable
+    for(int i=0;i<variable_map.size();i++){
+        if(variable_map[i].variable_name==token->operandstr){
+
+            if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                token->size = 0x02;
+                return;
+            }
+            if(variable_map[i].value_imm_or_addr==ADDRESS){
+                if(variable_map[i].value > 0xff){
+                    token->size = 0x03;
+                }else{
+                    token->size = 0x02;
+                }
+                return;
+            }
+        }
+    }
     
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
@@ -35,7 +54,27 @@ void input_lda_size(TOKEN *token){
     }
 }
 
-void input_ldx_size(TOKEN *token){
+void input_ldx_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
+
+    // operand == variable
+    for(int i=0;i<variable_map.size();i++){
+        if(variable_map[i].variable_name==token->operandstr){
+
+            if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                token->size = 0x02;
+                return;
+            }
+            if(variable_map[i].value_imm_or_addr==ADDRESS){
+                if(variable_map[i].value > 0xff){
+                    token->size = 0x03;
+                }else{
+                    token->size = 0x02;
+                }
+                return;
+            }
+        }
+    }
+
     /*
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
@@ -58,7 +97,27 @@ void input_ldx_size(TOKEN *token){
     }
 }
 
-void input_sta_size(TOKEN *token){
+void input_sta_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
+
+    // operand == variable
+    for(int i=0;i<variable_map.size();i++){
+        if(variable_map[i].variable_name==token->operandstr){
+
+            if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                token->size = 0x02;
+                return;
+            }
+            if(variable_map[i].value_imm_or_addr==ADDRESS){
+                if(variable_map[i].value > 0xff){
+                    token->size = 0x03;
+                }else{
+                    token->size = 0x02;
+                }
+                return;
+            }
+        }
+    }
+
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
         token->size = 0x03;
@@ -232,12 +291,12 @@ bool check_inc(string str){
     return false;
 }
 
-vector<TOKEN> input_addr_size(vector<TOKEN> token_vector){
+vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map){
     
     for(int i=0;i!=token_vector.size();i++){
-        if(check_lda(token_vector[i].opecodestr)){input_lda_size(&token_vector[i]);continue;}
-        if(check_ldx(token_vector[i].opecodestr)){input_ldx_size(&token_vector[i]);continue;}
-        if(check_sta(token_vector[i].opecodestr)){input_sta_size(&token_vector[i]);continue;}
+        if(check_lda(token_vector[i].opecodestr)){input_lda_size(&token_vector[i],variable_map);continue;}
+        if(check_ldx(token_vector[i].opecodestr)){input_ldx_size(&token_vector[i],variable_map);continue;}
+        if(check_sta(token_vector[i].opecodestr)){input_sta_size(&token_vector[i],variable_map);continue;}
         if(check_ora(token_vector[i].opecodestr)){input_ora_size(&token_vector[i]);continue;}
         if(check_jmp(token_vector[i].opecodestr)){input_jmp_size(&token_vector[i]);continue;}
         if(check_jsr(token_vector[i].opecodestr)){input_jsr_size(&token_vector[i]);continue;}
