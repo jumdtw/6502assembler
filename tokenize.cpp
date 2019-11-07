@@ -250,9 +250,9 @@ vector<VAR_TOKEN> tokenize_variable(int start,string text){
     }
     for(int i=0;i<var_token_vector.size();i++){
         VAR_TOKEN t = var_token_vector[i];
-        cout << "num : " << t.num << endl;
-        cout << "value_str : " << t.value_str << endl;
-        cout << "value_int : " << t.value_int << endl;
+        //cout << "num : " << t.num << endl;
+        //cout << "value_str : " << t.value_str << endl;
+        //cout << "value_int : " << t.value_int << endl;
     }
     return var_token_vector;
 }

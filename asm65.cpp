@@ -15,6 +15,7 @@ void debug_print(TOKEN *token){
     cout << "opecode : " << "0x" << std::hex << (unsigned int)token->opecode << endl;
     cout << "operand : " << "0x" << std::hex << token->operand << endl;
     cout << "size : " << "0x" << hex << token->size << endl;
+    
 }
 
 int main(int argc,char *argv[]){
