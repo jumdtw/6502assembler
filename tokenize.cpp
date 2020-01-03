@@ -23,10 +23,11 @@ vector<LAVEL_ADDER_INFO> lavel_mapping(vector<TOKEN> token_vector){
         base_addr += buf_token.size;      
         //cout << buf_token.opecodestr << " : 0x" << hex << buf_token.size << " : 0x" << hex << base_addr << endl;
     }
-    cout << "-------------------------------------------" << endl;
+    cout << "--------------------label_map--------------------" << endl;
     for (int i=0;i!=map.size();i++){
         cout << map[i].lavel <<  " : 0x" << hex << map[i].addr << endl;
     }
+    cout << "-------------------------------------------------" << endl;
     return map;
 }
 
@@ -318,5 +319,6 @@ vector<TOKEN> tokenize(vector<string> asmcodes){
     token_vector = input_opecode_info(token_vector,variable_map);
     // operand
     token_vector = input_lavel_or_variable(token_vector,lavel_map,variable_map);
+
     return token_vector;
 }

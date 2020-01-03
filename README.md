@@ -1,11 +1,5 @@
 # 6502 cpu assembler 
 
-## 注意点
-
-下ではいい感じのこと言ってますが、まだ何も実装できてません。
-
-
-
 
 ## Description 
 
@@ -64,10 +58,35 @@ exception
 `ldA`
 などと書くとエラーが発生します。
 
+
+## 問題点
+- dec 命令が zero か abs かで調整されていない。すべて abs で計算される
+- nes ファイルに落とす際の 0xfffa ~ 0xffff の入力作業が手打ち
+
+
 ## メモ
 命令を追加するときは
 
 calc_addr.cpp calc_addr.hpp input_hex_info.cpp input_hex_info.hppに加筆する
 
+タスク
+
+beqをラベルでとばす
+
+未実装の命令を実装
+
+bne
+
+pha 
+
+pla
+
+clc
+
+sec
+
+adc 
+
+sbc
 
 

@@ -1,15 +1,18 @@
-:delay = #$44
+.main111    pha  
+            pla
+            clc
+            sec
+            bne main111
+            beq main111
+            adc $20
+            sbc $10
+            bne main222
+            beq main222
+            pha  
+            pla
+            clc
+            sec
+.main222    adc $20
+            sbc $10
 
-.reset          lda #%00000001
-                sta $4015
-                ;oppai
-                lda #%10100001                        
-                sta $4000	                       
-                lda delay                            
-                sta $4001	                       
-;unnschi
-                lda #$ca
-                sta $4002
-                lda #$00     
-                sta $4003
 

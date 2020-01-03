@@ -449,6 +449,9 @@
 
 .loop           jmp loop
 
+; $0 == delay
+; beqなどのブランチで飛ぶ時のオフセットは実行したい命令のメモリ位置ー１byte！！！
+
 .mainloop       dec $0
                 lda $0
                 beq #$01
