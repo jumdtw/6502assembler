@@ -99,6 +99,18 @@ void input_sta_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
         }
     }
 
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->size = 0x03;
+        return;
+    }else if(token->Indi_FLAG){
+        token->size = 0x02;
+        return;
+    }
+
     // operand == lavel
     if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
         token->size = 0x03;
@@ -179,6 +191,10 @@ void input_dec_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
         token->size = 0x03;
         return;
     }
+}
+
+void input_dex_size(TOKEN *token){
+    token->size = 0x01;    
 }
 
 void input_beq_size(TOKEN *token){
@@ -341,6 +357,13 @@ bool check_dec(string str){
     return false;
 }
 
+bool check_dex(string str){
+    if(str=="dex"||str=="DEX"){
+        return true;
+    }
+    return false;
+}
+
 bool check_beq(string str){
     if(str=="beq"||str=="BEQ"){
         return true;
@@ -423,6 +446,7 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> v
         if(check_rts(token_vector[i].opecodestr)){input_rts_size(&token_vector[i]);continue;}
         if(check_rti(token_vector[i].opecodestr)){input_rti_size(&token_vector[i]);continue;}
         if(check_dec(token_vector[i].opecodestr)){input_dec_size(&token_vector[i],variable_map);continue;}
+        if(check_dex(token_vector[i].opecodestr)){input_dex_size(&token_vector[i]);continue;}
         if(check_beq(token_vector[i].opecodestr)){input_beq_size(&token_vector[i]);continue;}
         if(check_bne(token_vector[i].opecodestr)){input_bne_size(&token_vector[i]);continue;}
         if(check_inc(token_vector[i].opecodestr)){input_inc_size(&token_vector[i]);continue;}
@@ -433,6 +457,8 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> v
         if(check_sec(token_vector[i].opecodestr)){input_sec_size(&token_vector[i]);continue;}
         if(check_pha(token_vector[i].opecodestr)){input_pha_size(&token_vector[i]);continue;}
         if(check_pla(token_vector[i].opecodestr)){input_pla_size(&token_vector[i]);continue;}
+        cout << "not found opecode" << endl;
+        exit(1);
     }
     return token_vector;
 }

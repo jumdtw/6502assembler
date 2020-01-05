@@ -1,18 +1,23 @@
-.main111    pha  
-            pla
-            clc
-            sec
-            bne main111
-            beq main111
-            adc $20
-            sbc $10
-            bne main222
-            beq main222
-            pha  
-            pla
-            clc
-            sec
-.main222    adc $20
-            sbc $10
-
-
+.main    lda $200
+    pha
+    lda #$a
+    pha
+    pla
+    sta $200
+    lda $200
+    sta $0
+    ldx $0
+    lda #$1
+    pha
+    pla
+    sta [#$00]
+        lda $a
+        sta $4015
+        lda #%10100111                        
+        sta $4000	                       
+        lda #$00                              
+        sta $4001
+        lda #$aa
+        sta $4002
+        lda #$00
+        sta $4003

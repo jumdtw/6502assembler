@@ -92,6 +92,19 @@ void input_sta_hex(TOKEN *token){
         }
         return;
     }
+
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->opecode = STA_ZERO_X;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->opecode = STA_ABS_X;
+        return;
+    }else if(token->Indi_FLAG){
+        token->opecode = STA_INDI;
+        return;
+    }
+
     // hex abs or zero
     if(token->Hex_FLAG&&token->operand <= 0xff){
         token->opecode = STA_ZERO;
@@ -100,6 +113,7 @@ void input_sta_hex(TOKEN *token){
         token->opecode = STA_ABS;
         return;
     }
+
     // bin
     if(token->Bin_FLAG){
         token->opecode = STA_ZERO;
@@ -179,6 +193,10 @@ void input_dec_hex(TOKEN *token){
     }
 }
 
+void input_dex_hex(TOKEN *token){
+    token->opecode = DEX;
+}
+
 void input_beq_hex(TOKEN *token){
     token->opecode = BEQ;
 }
@@ -220,14 +238,17 @@ void input_adc_hex(TOKEN *token){
     */
     // hex abs or zero
     if(token->Hex_FLAG&&token->operand <= 0xff){
+        cout << "zero hex" << endl;
         token->opecode = ADC_ZERO;
         return;
     }else if(token->Hex_FLAG&&token->operand > 0xff){
+        cout << "abs hex" << endl;
         token->opecode = ADC_ABS;
         return;
     }
     // bin
     if(token->Bin_FLAG){
+        cout << "zero bin" << endl;
         token->opecode = ADC_ZERO;
         return;
     }
@@ -331,25 +352,28 @@ vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<VARIABLE_INFO
     TOKEN token;
     for(int i=0;i<token_vector.size();i++){
         token = token_vector[i];
-        if(check_lda(token.opecodestr)){input_lda_hex(&token,variable_map);return_vector.push_back(token);}
-        if(check_ldx(token.opecodestr)){input_ldx_hex(&token);return_vector.push_back(token);}
-        if(check_sta(token.opecodestr)){input_sta_hex(&token);return_vector.push_back(token);}
-        if(check_ora(token.opecodestr)){input_ora_hex(&token);return_vector.push_back(token);}
-        if(check_jmp(token.opecodestr)){input_jmp_hex(&token);return_vector.push_back(token);}
-        if(check_jsr(token.opecodestr)){input_jsr_hex(&token);return_vector.push_back(token);}
-        if(check_rts(token.opecodestr)){input_rts_hex(&token);return_vector.push_back(token);}
-        if(check_rti(token.opecodestr)){input_rti_hex(&token);return_vector.push_back(token);}
-        if(check_dec(token.opecodestr)){input_dec_hex(&token);return_vector.push_back(token);}
-        if(check_beq(token.opecodestr)){input_beq_hex(&token);return_vector.push_back(token);}
-        if(check_bne(token.opecodestr)){input_bne_hex(&token);return_vector.push_back(token);}
-        if(check_inc(token.opecodestr)){input_inc_hex(&token);return_vector.push_back(token);}
-        if(check_adc(token.opecodestr)){input_adc_hex(&token);return_vector.push_back(token);}
-        if(check_sbc(token.opecodestr)){input_sbc_hex(&token);return_vector.push_back(token);}
-        if(check_sei(token.opecodestr)){input_sei_hex(&token);return_vector.push_back(token);}
-        if(check_clc(token.opecodestr)){input_clc_hex(&token);return_vector.push_back(token);}
-        if(check_sec(token.opecodestr)){input_sec_hex(&token);return_vector.push_back(token);}
-        if(check_pha(token.opecodestr)){input_pha_hex(&token);return_vector.push_back(token);}
-        if(check_pla(token.opecodestr)){input_pla_hex(&token);return_vector.push_back(token);}
+        if(check_lda(token.opecodestr)){input_lda_hex(&token,variable_map);return_vector.push_back(token);continue;}
+        if(check_ldx(token.opecodestr)){input_ldx_hex(&token);return_vector.push_back(token);continue;}
+        if(check_sta(token.opecodestr)){input_sta_hex(&token);return_vector.push_back(token);continue;}
+        if(check_ora(token.opecodestr)){input_ora_hex(&token);return_vector.push_back(token);continue;}
+        if(check_jmp(token.opecodestr)){input_jmp_hex(&token);return_vector.push_back(token);continue;}
+        if(check_jsr(token.opecodestr)){input_jsr_hex(&token);return_vector.push_back(token);continue;}
+        if(check_rts(token.opecodestr)){input_rts_hex(&token);return_vector.push_back(token);continue;}
+        if(check_rti(token.opecodestr)){input_rti_hex(&token);return_vector.push_back(token);continue;}
+        if(check_dec(token.opecodestr)){input_dec_hex(&token);return_vector.push_back(token);continue;}
+        if(check_dex(token.opecodestr)){input_dex_hex(&token);return_vector.push_back(token);continue;}
+        if(check_beq(token.opecodestr)){input_beq_hex(&token);return_vector.push_back(token);continue;}
+        if(check_bne(token.opecodestr)){input_bne_hex(&token);return_vector.push_back(token);continue;}
+        if(check_inc(token.opecodestr)){input_inc_hex(&token);return_vector.push_back(token);continue;}
+        if(check_adc(token.opecodestr)){input_adc_hex(&token);return_vector.push_back(token);continue;}
+        if(check_sbc(token.opecodestr)){input_sbc_hex(&token);return_vector.push_back(token);continue;}
+        if(check_sei(token.opecodestr)){input_sei_hex(&token);return_vector.push_back(token);continue;}
+        if(check_clc(token.opecodestr)){input_clc_hex(&token);return_vector.push_back(token);continue;}
+        if(check_sec(token.opecodestr)){input_sec_hex(&token);return_vector.push_back(token);continue;}
+        if(check_pha(token.opecodestr)){input_pha_hex(&token);return_vector.push_back(token);continue;}
+        if(check_pla(token.opecodestr)){input_pla_hex(&token);return_vector.push_back(token);continue;}
+        cout << "not found opecode" << endl;
+        exit(1);
     }
     return return_vector;
 }

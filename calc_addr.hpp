@@ -14,6 +14,7 @@ bool check_jsr(string str);
 bool check_rts(string str);
 bool check_rti(string str);
 bool check_dec(string str);
+bool check_dex(string str);
 bool check_beq(string str);
 bool check_bne(string str);
 bool check_inc(string str);

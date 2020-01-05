@@ -15,7 +15,10 @@
 #define LDX_ZERO 0xa6
 //sta
 #define STA_ABS 0x8d
+#define STA_ABS_X 0x9d
 #define STA_ZERO 0x85
+#define STA_ZERO_X 0x95
+#define STA_INDI 0x81
 //ora
 #define ORA_IMM 0x09
 #define ORA_ABS 0x0D
@@ -31,6 +34,8 @@
 //dec
 #define DEC_ABS 0xce
 #define DEC_ZERO 0xc6
+//dex
+#define DEX 0xca
 //beq
 #define BEQ 0xf0
 //bne
@@ -39,11 +44,11 @@
 #define INC_ABS 0xee
 #define INC_ZERO 0xe6
 //adc
-#define ADC_ABS 0x65
-#define ADC_ZERO 0x6d
+#define ADC_ABS 0x6d
+#define ADC_ZERO 0x65
 //sbc
-#define SBC_ABS 0xe5
-#define SBC_ZERO 0xed
+#define SBC_ABS 0xed
+#define SBC_ZERO 0xe5
 //sei
 #define SEI 0x78
 //clc
