@@ -454,7 +454,7 @@
 
 .mainloop       dec $0
                 lda $0
-                beq #$01
+                beq sound ; ここ書き換えたから音ならなかったらこれのせい
                 rti
 
             ;ch1 Decline

@@ -457,7 +457,8 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> v
         if(check_sec(token_vector[i].opecodestr)){input_sec_size(&token_vector[i]);continue;}
         if(check_pha(token_vector[i].opecodestr)){input_pha_size(&token_vector[i]);continue;}
         if(check_pla(token_vector[i].opecodestr)){input_pla_size(&token_vector[i]);continue;}
-        cout << "not found opecode" << endl;
+
+        cout << token_vector[i].opecodestr << "not found opecode" << endl;
         exit(1);
     }
     return token_vector;

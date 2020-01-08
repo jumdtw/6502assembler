@@ -57,10 +57,15 @@ std::vector<std::string> read_file(std::string asmtext){
 
 void write_file(vector<TOKEN> token_vector,string asmtext){
     unsigned char low,high;
+    unsigned char main_low = 0x00,main_high = 0x80;
+    unsigned char NMI_low = 0x00,NMI_high = 0x00;
     ofstream ofs(asmtext, ios::binary);
     const unsigned int file_size_16k = 16384;
     unsigned int file_size_count = 0; 
-    unsigned char pate = 0xff,zero = 0x00,end_0x80 = 0x80,N=0x4e,E=0x45,S=0x53,sub=0x1a,size=0x01;
+    unsigned char pate = 0xff,zero = 0x00,N=0x4e,E=0x45,S=0x53,sub=0x1a,size=0x01;
+    int base_addr = 0x8000;
+    std::string Main_label = ".main";
+    std::string NMI_label = ".NMI";
 
     
     ofs.write(reinterpret_cast<char *>(&N),sizeof(N));
@@ -81,6 +86,15 @@ void write_file(vector<TOKEN> token_vector,string asmtext){
     ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
     
     for(int i=0;i<token_vector.size();i++){
+        if(token_vector[i].lavel==Main_label){
+            main_low = return_edian_low(base_addr);
+            main_high = return_edian_high(base_addr);
+        }
+        if(token_vector[i].lavel==NMI_label){
+            NMI_low = return_edian_low(base_addr);
+            NMI_high = return_edian_high(base_addr);
+        }
+        base_addr += token_vector[i].size;
         //cout << "0x" << hex << (unsigned int)token_vector[i].opecode << endl;
         ofs.write(reinterpret_cast<char *>(&token_vector[i].opecode),sizeof(token_vector[i].opecode));
         file_size_count += 1;
@@ -101,10 +115,10 @@ void write_file(vector<TOKEN> token_vector,string asmtext){
     for(int i=0;i<(file_size_16k-file_size_count-6);i++){
         ofs.write(reinterpret_cast<char *>(&pate),sizeof(pate));
     }
-    ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
-    ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
-    ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
-    ofs.write(reinterpret_cast<char *>(&end_0x80),sizeof(end_0x80));
+    ofs.write(reinterpret_cast<char *>(&NMI_low),sizeof(NMI_low));
+    ofs.write(reinterpret_cast<char *>(&NMI_high),sizeof(NMI_high));
+    ofs.write(reinterpret_cast<char *>(&main_low),sizeof(main_low));
+    ofs.write(reinterpret_cast<char *>(&main_high),sizeof(main_high));
     ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
     ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
 
