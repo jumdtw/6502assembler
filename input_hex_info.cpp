@@ -238,17 +238,14 @@ void input_adc_hex(TOKEN *token){
     */
     // hex abs or zero
     if(token->Hex_FLAG&&token->operand <= 0xff){
-        cout << "zero hex" << endl;
         token->opecode = ADC_ZERO;
         return;
     }else if(token->Hex_FLAG&&token->operand > 0xff){
-        cout << "abs hex" << endl;
         token->opecode = ADC_ABS;
         return;
     }
     // bin
     if(token->Bin_FLAG){
-        cout << "zero bin" << endl;
         token->opecode = ADC_ZERO;
         return;
     }

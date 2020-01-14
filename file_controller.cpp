@@ -60,12 +60,19 @@ void write_file(vector<TOKEN> token_vector,string asmtext){
     unsigned char main_low = 0x00,main_high = 0x80;
     unsigned char NMI_low = 0x00,NMI_high = 0x00;
     ofstream ofs(asmtext, ios::binary);
+    char outfile[] = "C:/Users/ttnmr/HOME/amegurefami/kotoha.nes";  //読み込むファイルの指定
+    ifstream fin( outfile, ios::in | ios::binary );
     const unsigned int file_size_16k = 16384;
     unsigned int file_size_count = 0; 
     unsigned char pate = 0xff,zero = 0x00,N=0x4e,E=0x45,S=0x53,sub=0x1a,size=0x01;
     int base_addr = 0x8000;
     std::string Main_label = ".main";
     std::string NMI_label = ".NMI";
+
+    if (!fin){
+        cout << "readファイル が開けません";
+        return;
+    }
 
     
     ofs.write(reinterpret_cast<char *>(&N),sizeof(N));
@@ -122,7 +129,14 @@ void write_file(vector<TOKEN> token_vector,string asmtext){
     ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
     ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
 
-    for(int i=0;i<8192;i++){
+    char buf_read;
+
+    for(int i=0;i<4096;i++){
+        fin.read( ( char * ) &buf_read, sizeof( zero ) );
+        ofs.write(reinterpret_cast<char *>(&buf_read),sizeof(zero));
+    }
+
+    for(int i=0;i<4096;i++){
         ofs.write(reinterpret_cast<char *>(&zero),sizeof(zero));
     }
 
