@@ -291,6 +291,58 @@ void input_pla_size(TOKEN *token){
     token->size = 0x01;    
 }
 
+void input_eor_size(TOKEN *token,vector<VARIABLE_INFO> variable_map){
+
+    // operand == variable
+    for(int i=0;i<variable_map.size();i++){
+        if(variable_map[i].variable_name==token->operandstr){
+
+            if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                token->size = 0x02;
+                return;
+            }
+            if(variable_map[i].value_imm_or_addr==ADDRESS){
+                if(variable_map[i].value > 0xff){
+                    token->size = 0x03;
+                }else{
+                    token->size = 0x02;
+                }
+                return;
+            }
+        }
+    }
+    
+    // operand == lavel
+    if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
+        token->size = 0x03;
+        return;
+    }
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->size = 0x03;
+        return;
+    }else if(token->Indi_FLAG){
+        token->size = 0x02;
+        return;
+    }
+    // imm
+    if(token->Imm_FLAG){
+        token->size = 0x02;
+        return;
+    }
+    // check lda zero
+    if(token->operand <= 0xff){
+        token->size = 0x02;
+        return;
+    }else{
+        token->size = 0x03;
+        return;
+    }
+}
+
 // -----------------checker-------------------------
 
 
@@ -434,6 +486,13 @@ bool check_pla(string str){
     return false;
 }
 
+bool check_eor(string str){
+    if(str=="eor"||str=="EOR"){
+        return true;
+    }
+    return false;
+}
+
 vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map){
     
     for(int i=0;i!=token_vector.size();i++){
@@ -457,6 +516,7 @@ vector<TOKEN> input_addr_size(vector<TOKEN> token_vector,vector<VARIABLE_INFO> v
         if(check_sec(token_vector[i].opecodestr)){input_sec_size(&token_vector[i]);continue;}
         if(check_pha(token_vector[i].opecodestr)){input_pha_size(&token_vector[i]);continue;}
         if(check_pla(token_vector[i].opecodestr)){input_pla_size(&token_vector[i]);continue;}
+        if(check_eor(token_vector[i].opecodestr)){input_eor_size(&token_vector[i],variable_map);continue;}
 
         cout << token_vector[i].opecodestr << "not found opecode" << endl;
         exit(1);

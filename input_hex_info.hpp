@@ -59,6 +59,13 @@
 #define PHA 0x48
 //pla
 #define PLA 0x68
+//eor
+#define EOR_IMM 0x49
+#define EOR_ABS 0x4d
+#define EOR_ABS_X 0x5d
+#define EOR_ZERO 0x45
+#define EOR_ZERO_X 0x55
+#define EOR_INDI 0x49
 
 vector<TOKEN> input_lavel_or_variable(vector<TOKEN> token_vector,vector<LAVEL_ADDER_INFO> lavel_map,vector<VARIABLE_INFO> variable_map);
 vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<VARIABLE_INFO> variable_map);

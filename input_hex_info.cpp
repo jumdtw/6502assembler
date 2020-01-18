@@ -294,6 +294,60 @@ void input_pla_hex(TOKEN *token){
     token->opecode = PLA;
 }
 
+void input_eor_hex(TOKEN *token,vector<VARIABLE_INFO> variable_map){
+    
+    // lavel or variable
+    if((!token->Bin_FLAG)&&(!token->Hex_FLAG)&&(!token->Imm_FLAG)){
+        for(int i=0;i<variable_map.size();i++){
+            if(token->operandstr==variable_map[i].variable_name){
+                if(variable_map[i].value_imm_or_addr==IMMDIATE){
+                    token->opecode = EOR_IMM;
+                    return;
+                }
+            }
+        }
+        if(token->size==0x02){
+            token->opecode = EOR_ZERO;
+        }else{
+            token->opecode = EOR_ABS;
+        }
+        return;
+    }
+    // indirect 
+    if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand <= 0xff){
+        token->opecode = EOR_ZERO_X;
+        return;
+    }else if(token->Indi_FLAG&&token->Imm_FLAG&&token->operand > 0xff){
+        token->opecode = EOR_ABS_X;
+        return;
+    }else if(token->Indi_FLAG){
+        token->opecode = EOR_INDI;
+        return;
+    }
+    // imm 
+    if(token->Imm_FLAG){
+        token->opecode = EOR_IMM;
+        return;
+    }
+    // hex abs or zero
+    if(token->Hex_FLAG&&token->operand <= 0xff){
+        token->opecode = EOR_ZERO;
+        return;
+    }else if(token->Hex_FLAG&&token->operand > 0xff){
+        token->opecode = EOR_ABS;
+        return;
+    }
+    // bin
+    if(token->Bin_FLAG){
+        token->opecode = EOR_ZERO;
+        return;
+    }
+}
+
+
+
+
+
 int search_label(string operand,vector<LAVEL_ADDER_INFO> lavel_map){
     for(int k=0;k<lavel_map.size();k++){
         if(lavel_map[k].lavel.substr(1) == operand){
@@ -369,6 +423,7 @@ vector<TOKEN> input_opecode_info(vector<TOKEN> token_vector,vector<VARIABLE_INFO
         if(check_sec(token.opecodestr)){input_sec_hex(&token);return_vector.push_back(token);continue;}
         if(check_pha(token.opecodestr)){input_pha_hex(&token);return_vector.push_back(token);continue;}
         if(check_pla(token.opecodestr)){input_pla_hex(&token);return_vector.push_back(token);continue;}
+        if(check_eor(token.opecodestr)){input_eor_hex(&token,variable_map);return_vector.push_back(token);continue;}
         cout << "not found opecode" << endl;
         exit(1);
     }

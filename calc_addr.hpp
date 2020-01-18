@@ -25,5 +25,6 @@ bool check_clc(string str);
 bool check_sec(string str);
 bool check_pha(string str);
 bool check_pla(string str);
+bool check_eor(string str);
 
 #endif
